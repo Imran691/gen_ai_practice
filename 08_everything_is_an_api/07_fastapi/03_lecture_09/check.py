@@ -1,6 +1,3 @@
-# To get the server output at the console
-# "python check.py"
-
 import requests
 
 r = requests.get('http://127.0.0.1:8000')

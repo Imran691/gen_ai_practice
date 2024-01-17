@@ -4,14 +4,17 @@ from fastapi import FastAPI
 # create an instance of FastAPI class by calling its constructor
 app : FastAPI = FastAPI()
 
-# define rout's end point by using decorator & instance of FastAPI class that we created
+# define rout's end point (set route) by using decorator & instance of FastAPI class that we created
 # ("/") end point indicates home page
+# We are calling its method get()
+# the purpose of decorator is that when we use it, the function written immediately after it is integrated with it
 @app.get("/")
 
 # create a function for above created end point
 def home() -> str:
     return "Hello World, abc"
 
+# uvicorn package is used to run the srever of FastAPI
 # To run the uvicorn server
 # "uvicorn filename:objectname"
 # "uvcorn hello:app"
