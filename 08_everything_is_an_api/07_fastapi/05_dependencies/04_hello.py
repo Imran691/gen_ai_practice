@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends
 from typing import Annotated
 
+# aprameter of dependency function must match with route endpoint parameter of route function
 def dep_func1(num):
     num = int(num)
     num += 1
