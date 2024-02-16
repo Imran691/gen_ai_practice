@@ -5,22 +5,18 @@ from typing import Optional
 from conn_str import conn_str
 
 # DB Table schema
-
-
 class Hero(SQLModel, table=True):
-    # primary_key will be assigned by DB automatically
+        # primary_key will be assigned by DB automatically
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
     secret_name: str
     age: Optional[int] = None
 
-
 # Estabish DB connection
-    # echo = True will make DB queries in console (intende for the coder) for de-bugging
+    # echo = True will make DB queries visible in console (intended for the coder) for de-bugging
 engine = create_engine(conn_str, echo=True)
 
 # create Tables & DB (call migrations)
-
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
@@ -28,16 +24,15 @@ def create_db_and_tables():
 # insert data into the table
 
 
-def create_hero():
-    hero1 = Hero(name="M Imran", secret_name="MI")
-    hero2 = Hero(name="Rohan Ahmad", secret_name="RA")
-    hero3 = Hero(name="Ayra Imran", secret_name="AI")
+def heros():
+    with Session(engine)as session:
+        hero1 = Hero(name="M Imran", secret_name="MI")
+        hero2 = Hero(name="Rohan Ahmad", secret_name="RA")
+        hero3 = Hero(name="Ayra Imran", secret_name="AI")
 
-    with Session(engine) as session:
-        session.add(hero1)
-        session.add(hero2)
-        session.add(hero3)
+        session.add_all([hero1, hero2, hero3])
         session.commit()
+
 
 # get data from the DB table
 
@@ -57,8 +52,6 @@ def get_hero():
             print(hero.name)
 
 # update the data
-
-
 def update_hero():
     with Session(engine) as session:
         statement = select(Hero).where(Hero.id == 1)
@@ -73,20 +66,26 @@ def update_hero():
         session.commit()
 
 # delete the data
-
-
 def delete_hero():
     with Session(engine) as session:
-        statement = select(Hero).where(Hero.id == 1)
+        statement = select(Hero).where(Hero.id == 3)
         result = session.exec(statement).first()
         print(result)
 
         session.delete(result)
         session.commit()
 
+# Delete tables
+def delet_table():
+    with Session(engine) as session:
+        model_to_delete = SQLModel.metadata.tables['hero']
+        SQLModel.metadata.drop_all(bind=engine, tables=[model_to_delete])
+        session.commit()
+
 if __name__ == "__main__":
-    # create_db_and_tables()
+    create_db_and_tables()
     # create_hero()
     # get_hero()
     # update_hero()
-    delete_hero()
+    # delete_hero()
+    # delet_table()
