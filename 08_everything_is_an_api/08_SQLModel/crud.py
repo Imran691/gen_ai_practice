@@ -35,7 +35,7 @@ def heros():
 
 
 # get data from the DB table
-
+# using where clause
 
 def get_hero():
     with Session(engine) as session:

@@ -14,6 +14,7 @@ class Hero(SQLModel, table=True):
     name: str
     secret_name: str
     age: Optional[int] = None
+    # the team in "team.id" is the table in DB, not the Team schema in this code
     team_id: Optional[int] = Field(default=None, foreign_key="team.id")
 
 def create_db_and_tables():
@@ -21,28 +22,39 @@ def create_db_and_tables():
 
 def create_teams_and_heros():
     with Session(engine) as session:
-        team_1 = Team(name="Avengers", country="USA")
-        team_2 = Team(name="X-Men", country="USA")
-        session.add_all([team_1, team_2])
-        session.commit()
+        # team_1 = Team(name="Avengers", country="USA")
+        # team_2 = Team(name="X-Men", country="USA")
+        # session.add_all([team_1, team_2])
+        # session.commit()
 
-        hero_1 = Hero(name="Spider-Man", secret_name="Peter Parker", team_id=team_2.id)
-        hero_2 = Hero(name="Iron Man", secret_name="Tony Stark", team_id=team_1.id)
-        session.add_all([hero_1, hero_2])
+        # hero_1 = Hero(name="Spider-Man", secret_name="Peter Parker", team_id=team_2.id)
+        # hero_2 = Hero(name="Iron Man", secret_name="Tony Stark", team_id=team_1.id)
+        # session.add_all([hero_1, hero_2])
+        hero_3 = Hero(name="Super-Man", secret_name="Clark Kent")
+        session.add(hero_3)
         session.commit()
 
 def get_hero_by_where():
     with Session(engine) as session:
-        statement = select(Hero).where(Hero.id == 1)
-        hero = session.exec(statement).first()
-        print(hero.name)
+        statement = select(Hero, Team).where(Hero.team_id == Team.id)
+        results = session.exec(statement)
+        for hero, team in results:
+            print("Hero:", hero.name, "Team:", team.name)
 
+# Read connected data
 def get_hero_by_join():
     with Session(engine) as session:
-        statement = select(Team).join(Hero)
+        statement = select(Hero, Team).join(Team)
         result = session.exec(statement)
-        for hero in result:
-            print(hero.name, hero.country)
+        for hero, team in result:
+            print("Hero: ", hero.name, "Team: ", team.name)
+
+def get_hero_by_left_join():
+    with Session(engine) as session:
+        statement = select(Hero, Team).join(Team, isouter=True)
+        result = session.exec(statement)
+        for hero, team in result:
+            print("Hero: ", hero.name, "Team: ", team.name if team else "No team")
 
 def update_team():
     with Session(engine) as session:
@@ -53,13 +65,33 @@ def update_team():
         session.add(team)
         session.commit()
 
+def update_data_connection():
+    with Session(engine) as session:
+        statement = select(Hero).where(Hero.id == 3)
+        result = session.exec(statement).first()
+        result.team_id = 1
+        session.add(result) 
+        session.commit()
+
+def remove_data_connection():
+    with Session(engine) as session:
+        statement = select(Hero).where(Hero.id == 3)
+        result = session.exec(statement).first()
+        result.team_id = None
+        session.add(result)
+        session.commit()
+
 def main():
     # create_db_and_tables()
     # create_teams_and_heros()
     # get_hero_by_where()
-    get_hero_by_join()
+    # get_hero_by_join()
+    # get_hero_by_left_join()
     # update_team()
+    # update_data_connection()
+    remove_data_connection()
     
 
 if __name__ == "__main__":
     main()
+    # print(__name__)
