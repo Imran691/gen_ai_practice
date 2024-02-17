@@ -81,6 +81,12 @@ def remove_data_connection():
         session.add(result)
         session.commit()
 
+def delete_tables():
+    with Session(engine) as session:
+        model_to_delete = SQLModel.metadata.tables['team']
+        SQLModel.metadata.drop_all(bind=engine, tables=[model_to_delete])
+        session.commit()
+
 def main():
     # create_db_and_tables()
     # create_teams_and_heros()
@@ -89,7 +95,8 @@ def main():
     # get_hero_by_left_join()
     # update_team()
     # update_data_connection()
-    remove_data_connection()
+    # remove_data_connection()
+    delete_tables()
     
 
 if __name__ == "__main__":
