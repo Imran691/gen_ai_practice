@@ -10,6 +10,8 @@ class Team(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
     country: str
+    # relationship attribute to define relationships b/w two models
+    # in back_populates="team"; "team" is the name of the attribute in the Team model
     hero: List["Hero"] = Relationship(back_populates="team")
 
 
@@ -19,7 +21,8 @@ class Hero(SQLModel, table=True):
     secret_name: str
     age: Optional[int] = None
     team_id: Optional[int] = Field(default=None, foreign_key="team.id")
-    # relationship attribute to define relationships b/w two models
+    # Optional type annotation means that attribute could be None or a full team object
+    # This is becase the team id could be None in DB
     team: Optional[Team] = Relationship(back_populates="hero")
 
 
@@ -54,7 +57,9 @@ def update_hero_team():
         session.add(hero)
         session.commit()
 
-# create a team alongwith its list of heros 
+# create a team alongwith its list of heros
+
+
 def create_team_with_heros():
     with Session(engine) as session:
         hero_black_lion = Hero(
@@ -63,9 +68,10 @@ def create_team_with_heros():
             name="Pink Panther", secret_name="Tony Stark", age=40)
 
         team = Team(
-            name="Fighters", country="AUS", hero = [hero_black_lion, hero_pink_panther])
+            name="Fighters", country="AUS", hero=[hero_black_lion, hero_pink_panther])
         session.add(team)
         session.commit()
+
 
 def get_team_with_heros():
     with Session(engine) as session:
@@ -74,12 +80,20 @@ def get_team_with_heros():
         # print(team)
         print(team.hero)
 
+def delete_tables():
+    with Session(engine) as session:
+        model_to_delete = SQLModel.metadata.tables['team']
+        SQLModel.metadata.drop_all(bind=engine, tables=[model_to_delete])
+        session.commit()
+
+
 def main():
     # create_db_and_tables()
     # create_teams_and_heros()
     # update_hero_team()
     # create_team_with_heros()
-    get_team_with_heros()
+    # get_team_with_heros()
+    delete_tables()
 
 
 if __name__ == "__main__":
