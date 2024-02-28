@@ -17,7 +17,7 @@ def home() -> str:
 # uvicorn package is used to run the srever of FastAPI
 # To run the uvicorn server
 # "uvicorn filename:objectname"
-# "uvcorn hello:app"
+# "uvicorn hello:app"
 
 # To update the changes in our function return 
 # "uvicorn hello:app --reload"
