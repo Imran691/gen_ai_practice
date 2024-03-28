@@ -1,3 +1,5 @@
+# lecture URL = https://www.youtube.com/watch?v=RkO-q9asMFM&t=16s
+
 from sqlmodel import SQLModel, create_engine, Session, select, Field
 from typing import Optional
 from conn_str import conn_str

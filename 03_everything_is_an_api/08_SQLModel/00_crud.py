@@ -1,3 +1,4 @@
+# lecture ULR = https://www.youtube.com/watch?v=LY52NhyJZbY&t=6158s
 # SQLModel is wrapper of SQLAlchaemy & Pydantic
 
 from sqlmodel import SQLModel, Field, create_engine, Session, select
