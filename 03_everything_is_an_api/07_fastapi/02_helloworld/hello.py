@@ -15,17 +15,25 @@ app : FastAPI = FastAPI()
 @app.get("/")
 
 # create a function for above created end point
+
 # path function
 def home() -> str:
     return "Hello World, Am here!"
 
-# uvicorn package is used to run the srever of FastAPI
-# To run the uvicorn server
+# uvicorn web server is used to run the srever of FastAPI
+# Uvicorn and FastAPI web application can be started in two ways: externally & internally
+
+# To start the uvicorn server externally
 # "uvicorn filename:objectname"
 # "uvicorn hello:app"
 
-# To automatically update the changes in our function return 
+# To restart the web server automatically, if hello.py changes.
 # "uvicorn hello:app --reload"
+
+# To start the Uvicorn server externally and with pure python command: "python hello.py"
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("hello:app", reload=True, port=8000, host="127.0.0.1"  )
 
 # to see the result at console 
 # "http http://127.0.0.1:8000"        or
